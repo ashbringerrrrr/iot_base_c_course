@@ -42,6 +42,5 @@ int find_year_min(TempData data[], size_t count);
 int find_year_max(TempData data[], size_t count);
 
 void print_help();
-void load_test_data(DynamicTempData* array);
 
 #endif // TEMP_API_H

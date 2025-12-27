@@ -56,7 +56,7 @@ int load_from_csv(DynamicTempData* array, const char* filename){
 
     FILE* file = fopen(filename, "r");
     if (!file) {
-        printf("Error: не удалось открыть файл %s\n", filename);
+        printf("Error: opening file was unsuccessful: %s\n", filename);
         return 0;
     }
 
@@ -83,7 +83,7 @@ int load_from_csv(DynamicTempData* array, const char* filename){
         }
 
         if (parsed_fields != 6) {
-            fprintf(stderr, "Error line №%d: неверный формат данных \"%s\"\n", line_number, line);
+            printf("Error: line №%d: wrong data format \"%s\"\n", line_number, line);
             line_number++;
             continue;
         }
@@ -98,7 +98,7 @@ int load_from_csv(DynamicTempData* array, const char* filename){
         if (add_to_dynamic_data(array, data)) {
             data_added++;
         } else {
-            fprintf(stderr, "Error line №%d: некорректные данные \"%s\"\n", line_number, line);
+            printf("Error: line №%d: wrong data format \"%s\"\n", line_number, line);
         }
 
         line_number++;
@@ -130,14 +130,14 @@ void print_data(TempData data[], size_t count) {
                 data[i].hour, data[i].minute,
                 data[i].temperature);
     }
-    printf("Всего записей: %zu\n", count);
+    printf("Total records: %zu\n", count);
 }
 
 void print_month_stats(TempData data[], size_t count, int month) {
-    printf("Данные за месяц %02d \n", month);
-    printf("Среднемесячная температура: %.1f°C\n", calc_month_avg(data, count, month));
-    printf("Минимальная температура: %d°C\n", find_month_min(data, count, month));
-    printf("Максимальная температура: %d°C\n", find_month_max(data, count, month));
+    printf("Data for month %02d \n", month);
+    printf("Month's average temperature: %.1f°C\n", calc_month_avg(data, count, month));
+    printf("Month's minimal temperature: %d°C\n", find_month_min(data, count, month));
+    printf("Month's maximal temperature: %d°C\n", find_month_max(data, count, month));
     printf("=======================================\n");
 }
 
@@ -182,10 +182,10 @@ int find_month_max(TempData data[], size_t count, int month) {
 }
 
 void print_year_stats(TempData data[], size_t count) {
-    printf("Годовая статистика\n");
-    printf("Среднегодовая температура: %.1f°C\n", calc_year_avg(data, count));
-    printf("Минимальная температура за год: %d°C\n", find_year_min(data, count));
-    printf("Максимальная температура за год: %d°C\n", find_year_max(data, count));
+    printf("Year statistic\n");
+    printf("Year's average temperature: %.1f°C\n", calc_year_avg(data, count));
+    printf("Year's minimal temperature: %d°C\n", find_year_min(data, count));
+    printf("Year's maximal temperature: %d°C\n", find_year_max(data, count));
     printf("=======================================\n");
 }
 
@@ -225,30 +225,9 @@ int find_year_max(TempData data[], size_t count) {
 
 void print_help() {
     printf("=======================================\n");
-    printf("Ключи командной строки:\n");
-    printf("  -h           Показать справку\n");
-    printf("  -f <файл>    Входной файл с данными\n");
-    printf("  -m <число>   Вывести статистику только за указанный месяц\n");
+    printf("Temperature statistic app. Please enter cmd's key:\n");
+    printf("  -h                for help.\n");
+    printf("  -f <filename>     for load data from this file.\n");
+    printf("  -m <xx>           statistic for xx month.\n");
     printf("\n");
-}
-
-void load_test_data(DynamicTempData* array) {
-    TempData test_data[] = {
-        {2024, 1, 15, 10, 30, -2},
-        {2024, 1, 15, 14, 45, 3},
-        {2024, 1, 16, 9, 15, 1},
-        {2024, 2, 1, 8, 0, -8},
-        {2024, 2, 15, 12, 30, 5},
-        {2024, 3, 10, 15, 45, 12},
-        {2024, 3, 20, 18, 30, 18},
-        {2024, 12, 25, 16, 45, -10},
-        {2024, 12, 31, 23, 59, -15},
-        {2024, 12, 24, 12, 0, -5}
-    };
-
-    size_t test_data_count = ARRAY_SIZE(test_data);
-
-    for (size_t i = 0; i < test_data_count; i++) {
-        add_to_dynamic_data(array, test_data[i]);
-    }
 }

@@ -4,6 +4,12 @@
 #include <unistd.h>
 
 int main(int argc, char* argv[])  {
+    if (argc == 1) {
+        printf("Error: no cmd's arguments typed\n");
+        print_help();
+        return 1;
+    }
+
     int chosen_month = 0;
     char* input_file = NULL;
     int opt;
@@ -15,17 +21,17 @@ int main(int argc, char* argv[])  {
                 return 0;
             case 'f':
                 input_file = optarg;
-                printf("Входной файл с данными: %s\n", input_file);
+                printf("Input filename: %s\n", input_file);
                 break;
             case 'm':
                 chosen_month = atoi(optarg);
                 if (chosen_month < 1 || chosen_month > 12) {
-                    printf("Номер месяца должен быть от 1 до 12\n");
+                    printf("Error: month number shoud be from 1 to 12\n");
                     return 1;
                 }
                 break;
             case '?':
-                printf("Неверный ввод ключей командной строки\n");
+                printf("Error: wrong cmd's arguments typed\n");
                 print_help();
                 return 1;
         }
@@ -33,24 +39,16 @@ int main(int argc, char* argv[])  {
 
     DynamicTempData* data_array = create_dynamic_data(100);
 
-    if (input_file) {
-        int data_loaded = load_from_csv(data_array, input_file);
-        if (data_loaded == 0) {
-            printf("Error: не удалось загрузить данные из файла %s\n", input_file);
-            return 1;
-        }
-    } else {
-        load_test_data(data_array);
+    int data_loaded = load_from_csv(data_array, input_file);
+    if (data_loaded == 0) {
+        printf("Error: unsuccessful download data from file %s\n", input_file);
+        return 1;
     }
+
 
     size_t count = ARRAY_SIZE(data_array);
 
-    //printf("\nВсе записи:\n");
-    //print_data(data_array->data, data_array->count);
-
-    //printf("\nСортировка:\n");
     sort_by_date(data_array->data, data_array->count);
-    //print_data(data_array->data, data_array->count);
 
     printf("\n");
     if (chosen_month > 0) {
@@ -64,7 +62,7 @@ int main(int argc, char* argv[])  {
         if (is_found)
             print_month_stats(data_array->data, data_array->count, chosen_month);
         else
-            printf("Нет данных за %d месяц\n", chosen_month);
+            printf("Warning: No data from %d month\n", chosen_month);
     }
     else{
         int months_with_data[12] = {0};
