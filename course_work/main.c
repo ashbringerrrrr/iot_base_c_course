@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "temp_functions.h"
 #include <unistd.h>
 
@@ -33,9 +31,19 @@ int main(int argc, char* argv[])  {
             case '?':
                 printf("Error: wrong cmd's arguments typed\n");
                 print_help();
+                return 0;
+            default:
+                print_help();
                 return 1;
         }
     }
+
+    if (optind < argc) {
+        printf("Error: Unknown arguments\n");
+        print_help();
+        return 1;
+    }
+
 
     DynamicTempData* data_array = create_dynamic_data(100);
 
@@ -51,6 +59,7 @@ int main(int argc, char* argv[])  {
     sort_by_date(data_array->data, data_array->count);
 
     printf("\n");
+    print_month_stat_header();
     if (chosen_month > 0) {
         int is_found = 0;
         for (size_t i = 0; i < data_array->count; i++) {

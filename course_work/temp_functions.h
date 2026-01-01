@@ -31,6 +31,7 @@ int load_from_csv(DynamicTempData* array, const char* filename);
 void sort_by_date(TempData data[], size_t count);
 void print_data(TempData data[], size_t count);
 
+void print_month_stat_header();
 void print_month_stats(TempData data[], size_t count, int month);
 float calc_month_avg(TempData data[], size_t count, int month);
 int find_month_min(TempData data[], size_t count, int month);

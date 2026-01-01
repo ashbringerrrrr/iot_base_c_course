@@ -1,9 +1,5 @@
 #include "temp_functions.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
-#include <time.h>
 
 DynamicTempData* create_dynamic_data(size_t init_cap){
     DynamicTempData* array = (DynamicTempData*)malloc(sizeof(DynamicTempData));
@@ -83,7 +79,7 @@ int load_from_csv(DynamicTempData* array, const char* filename){
         }
 
         if (parsed_fields != 6) {
-            printf("Error: line №%d: wrong data format \"%s\"\n", line_number, line);
+            printf("Error: line №%d: wrong data format. Data: %s\n", line_number, line);
             line_number++;
             continue;
         }
@@ -98,12 +94,11 @@ int load_from_csv(DynamicTempData* array, const char* filename){
         if (add_to_dynamic_data(array, data)) {
             data_added++;
         } else {
-            printf("Error: line №%d: wrong data format \"%s\"\n", line_number, line);
+            printf("Error: line №%d: wrong data format. Data: %s\n", line_number, line);
         }
 
         line_number++;
     }
-
     fclose(file);
     return data_added;
 }
@@ -133,12 +128,25 @@ void print_data(TempData data[], size_t count) {
     printf("Total records: %zu\n", count);
 }
 
+void print_month_stat_header() {
+    printf("%-5s %-8s %-8s %-8s\n", "Month", "MonthAvg", "MonthMax", "MonthMin");
+    printf("%-5s %-8s %-8s %-8s\n", "─────", "────────", "────────", "────────");
+}
+
 void print_month_stats(TempData data[], size_t count, int month) {
+
+    float avg = calc_month_avg(data, count, month);
+    int max = find_month_min(data, count, month);
+    int min = find_month_max(data, count, month);
+
+    printf("%-5d %-8.1f %-8d %-8d\n", month, avg, max, min);
+    /*
     printf("Data for month %02d \n", month);
     printf("Month's average temperature: %.1f°C\n", calc_month_avg(data, count, month));
     printf("Month's minimal temperature: %d°C\n", find_month_min(data, count, month));
     printf("Month's maximal temperature: %d°C\n", find_month_max(data, count, month));
     printf("=======================================\n");
+    */
 }
 
 float calc_month_avg(TempData data[], size_t count, int month) {
@@ -182,7 +190,9 @@ int find_month_max(TempData data[], size_t count, int month) {
 }
 
 void print_year_stats(TempData data[], size_t count) {
-    printf("Year statistic\n");
+    int curr_year = data->year;
+    printf("=======================================\n");
+    printf("Statistic for %d year\n", curr_year);
     printf("Year's average temperature: %.1f°C\n", calc_year_avg(data, count));
     printf("Year's minimal temperature: %d°C\n", find_year_min(data, count));
     printf("Year's maximal temperature: %d°C\n", find_year_max(data, count));
